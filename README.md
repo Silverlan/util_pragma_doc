@@ -1,2 +1,2 @@
 # util_pragma_doc
-Pragma Code Documentation Library
+Library for managing pragma documentation files.
