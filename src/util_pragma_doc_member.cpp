@@ -43,6 +43,10 @@ doc::Member doc::Member::Create(const Collection &collection,const std::string &
 	member.SetName(name);
 	return member;
 }
+bool doc::Member::operator==(const Member &other) const
+{
+	return m_name == other.m_name && m_type == other.m_type;
+}
 const std::string &doc::Member::GetName() const {return m_name;}
 std::string doc::Member::GetFullName() const
 {

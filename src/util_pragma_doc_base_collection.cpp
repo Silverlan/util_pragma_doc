@@ -6,8 +6,16 @@
 
 using namespace pragma;
 
+doc::BaseCollectionObject::BaseCollectionObject(const BaseCollectionObject &other)
+	: m_collection{other.m_collection}
+{}
+doc::BaseCollectionObject &doc::BaseCollectionObject::operator=(const BaseCollectionObject &other)
+{
+	m_collection = other.m_collection;
+	return *this;
+}
 doc::BaseCollectionObject::BaseCollectionObject(const Collection *collection)
 	: m_collection{(collection != nullptr) ? collection->shared_from_this() : nullptr}
 {}
-const doc::Collection *doc::BaseCollectionObject::GetCollection() const {return m_collection.lock().get();}
+doc::Collection *doc::BaseCollectionObject::GetCollection() {return const_cast<doc::Collection*>(m_collection.lock().get());}
 void doc::BaseCollectionObject::SetCollection(Collection &col) {m_collection = col.shared_from_this();}

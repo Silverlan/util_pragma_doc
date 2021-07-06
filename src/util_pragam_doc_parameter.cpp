@@ -14,6 +14,11 @@ doc::Parameter doc::Parameter::Create(const std::string &name)
 	param.SetName(name);
 	return param;
 }
+bool doc::Parameter::operator==(const Parameter &other) const
+{
+	return m_name == other.m_name &&
+		m_type == other.m_type;
+}
 doc::Parameter doc::Parameter::Read(std::shared_ptr<VFilePtrInternal> &f)
 {
 	Parameter parameter {};

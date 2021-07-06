@@ -18,6 +18,10 @@ std::shared_ptr<doc::EnumSet> doc::EnumSet::Create(const std::string &name,const
 doc::EnumSet::EnumSet(const Collection *collection)
 	: BaseCollectionObject(collection)
 {}
+bool doc::EnumSet::operator==(const EnumSet &other) const
+{
+	return m_name == other.m_name && m_underlyingType == other.m_underlyingType;
+}
 void doc::EnumSet::ReserveEnums(uint32_t n) {m_enums.reserve(n);}
 void doc::EnumSet::AddEnum(const Enum &e)
 {

@@ -18,6 +18,10 @@ doc::Function doc::Function::Create(const Collection &collection,const std::stri
 	fc.m_name = name;
 	return fc;
 }
+bool doc::Function::operator==(const Function &other) const
+{
+	return m_name == other.m_name && m_type == other.m_type;
+}
 doc::Function doc::Function::Read(const Collection &collection,std::shared_ptr<VFilePtrInternal> &f)
 {
 	Function function {collection};
@@ -105,7 +109,7 @@ const std::string &doc::Function::GetDescription() const {return m_description;}
 doc::Function::Type doc::Function::GetType() const {return m_type;}
 doc::Function::Flags doc::Function::GetFlags() const {return m_flags;}
 doc::GameStateFlags doc::Function::GetGameStateFlags() const {return m_gameStateFlags;}
-const std::vector<doc::Overload> &doc::Function::GetOverloads() const {return m_overloads;}
+std::vector<doc::Overload> &doc::Function::GetOverloads() {return m_overloads;}
 const std::optional<doc::Function::ExampleCode> &doc::Function::GetExampleCode() const {return m_exampleCode;}
 const std::string &doc::Function::GetURL() const {return m_url;}
 const std::vector<std::string> &doc::Function::GetRelated() const {return m_related;}

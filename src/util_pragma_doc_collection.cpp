@@ -176,4 +176,9 @@ pragma::doc::PCollection pragma::doc::Collection::Load(const udm::AssetData &dat
 		return nullptr;
 	return col;
 }
+
+bool pragma::doc::Collection::operator==(const Collection &other) const
+{
+	return m_name == other.m_name && (m_flags &(Flags::Library | Flags::Class)) == (other.m_flags &(Flags::Library | Flags::Class));
+}
 #pragma optimize("",on)

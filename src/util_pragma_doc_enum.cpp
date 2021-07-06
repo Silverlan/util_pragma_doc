@@ -12,6 +12,10 @@ doc::Enum doc::Enum::Create(const EnumSet &es) {return Enum{es};}
 doc::Enum::Enum(const EnumSet &enumSet)
 	: BaseCollectionObject(*enumSet.GetCollection()),m_enumSet{enumSet.shared_from_this()}
 {}
+bool doc::Enum::operator==(const Enum &other) const
+{
+	return m_name == other.m_name && m_value == other.m_value && m_type == other.m_type;
+}
 doc::Enum doc::Enum::Read(const EnumSet &enumSet,std::shared_ptr<VFilePtrInternal> &f)
 {
 	Enum e {enumSet};

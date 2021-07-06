@@ -33,6 +33,7 @@ static std::string generate_identifier(const pragma::doc::Collection &c)
 
 static void save_parameter(udm::LinkedPropertyWrapper &udmParam,const pragma::doc::Parameter &param)
 {
+	udmParam["name"] = param.GetName();
 	udmParam["type"] = param.GetType();
 	udmParam["flags"] = udm::flags_to_string(param.GetFlags());
 	udmParam["gameStateFlags"] = udm::flags_to_string(param.GetGameStateFlags());
@@ -86,17 +87,21 @@ static void save_collection(udm::LinkedPropertyWrapper udmCollection,const pragm
 			{
 				auto udmOverload = udmOverloads[idx++];
 
-				auto udmParams = udmOverload["params"];
-				for(auto &param : overload.GetParameters())
+				auto &params = overload.GetParameters();
+				auto udmParams = udmOverload.AddArray("params",params.size());
+				uint32_t idx = 0;
+				for(auto &param : params)
 				{
-					auto udmParam = udmParams[param.GetName()];
+					auto udmParam = udmParams[idx++];
 					save_parameter(udmParam,param);
 				}
 
-				auto udmReturnValues = udmOverload["returnValues"];
-				for(auto &param : overload.GetReturnValues())
+				auto &returnValues = overload.GetReturnValues();
+				auto udmReturnValues = udmOverload.AddArray("returnValues",returnValues.size());
+				idx = 0;
+				for(auto &param : returnValues)
 				{
-					auto udmReturnValue = udmReturnValues[param.GetName()];
+					auto udmReturnValue = udmReturnValues[idx++];
 					save_parameter(udmReturnValue,param);
 				}
 			}
@@ -177,6 +182,7 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 	udmCollection["identifier"](m_identifier);
 
 	auto fLoadParam = [](udm::LinkedPropertyWrapper &udmParam,pragma::doc::Parameter &param) {
+		udmParam["name"](param.m_name);
 		udmParam["type"](param.m_type);
 		udm::to_flags(udmParam["flags"],param.m_flags);
 		udm::to_flags(udmParam["gameStateFlags"],param.m_gameStateFlags);
@@ -241,21 +247,19 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 
 			auto udmParams = udmOverload["params"];
 			auto &params = overload.GetParameters();
-			params.reserve(udmParams.GetChildCount());
-			for(auto pair : udmParams.ElIt())
+			params.reserve(udmParams.GetSize());
+			for(auto &udmParam : udmParams)
 			{
 				params.push_back({});
-				params.back().m_name = pair.key;
 				fLoadParam(pair.property,params.back());
 			}
 
 			auto udmReturnValues = udmOverload["returnValues"];
 			auto &returnValues = overload.GetReturnValues();
-			returnValues.reserve(udmReturnValues.GetChildCount());
-			for(auto pair : udmReturnValues.ElIt())
+			returnValues.reserve(udmReturnValues.GetSize());
+			for(auto &udmReturnValue : udmReturnValues)
 			{
 				returnValues.push_back({});
-				returnValues.back().m_name = pair.key;
 				fLoadParam(pair.property,returnValues.back());
 			}
 		}
