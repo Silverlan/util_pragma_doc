@@ -116,6 +116,12 @@ namespace pragma
 			Group()=default;
 			std::string m_name;
 		};
+		struct Source
+		{
+			std::string moduleName;
+			std::string fileName;
+			uint32_t line = 0;
+		};
 		class Overload
 		{
 		public:
@@ -133,12 +139,21 @@ namespace pragma
 			std::vector<Parameter> &GetReturnValues();
 			const std::vector<Parameter> &GetReturnValues() const {return const_cast<Overload*>(this)->GetReturnValues();}
 
+			const std::optional<Source> &GetSource() const {return m_source;}
+			void SetSource(const Source &source) {m_source = source;}
+			void ClearSource() {m_source = {};}
+
+			const std::string &GetURL() const {return m_url;}
+			void SetURL(const std::string &url) {m_url = url;}
+
 			void AddParameter(const Parameter &parameter);
 			void AddReturnValue(const Parameter &parameter);
 		private:
 			Overload()=default;
 			std::vector<Parameter> m_parameters;
 			std::vector<Parameter> m_returnValues;
+			std::optional<Source> m_source {};
+			std::string m_url;
 		};
 		class Function
 			: public BaseCollectionObject

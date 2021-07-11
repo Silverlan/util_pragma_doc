@@ -54,7 +54,8 @@ static void save_parameter(udm::LinkedPropertyWrapper &udmParam,const pragma::do
 static void save_collection(udm::LinkedPropertyWrapper udmCollection,const pragma::doc::Collection &collection)
 {
 	udmCollection["desc"] = collection.GetDescription();
-	udmCollection["url"] = collection.GetURL();
+	if(!collection.GetURL().empty())
+		udmCollection["url"] = collection.GetURL();
 	udmCollection["flags"] = udm::flags_to_string(collection.GetFlags());
 	udmCollection["identifier"] = generate_identifier(collection);
 
@@ -63,7 +64,8 @@ static void save_collection(udm::LinkedPropertyWrapper udmCollection,const pragm
 	{
 		auto udmFunction = udmFunctions[f.GetName()];
 		udmFunction["desc"] = f.GetDescription();
-		udmFunction["url"] = f.GetURL();
+		if(!f.GetURL().empty())
+			udmFunction["url"] = f.GetURL();
 		udmFunction["type"] = f.GetType();
 		udmFunction["flags"] = udm::flags_to_string(f.GetFlags());
 		udmFunction["gameStateFlags"] = udm::flags_to_string(f.GetGameStateFlags());
@@ -104,6 +106,19 @@ static void save_collection(udm::LinkedPropertyWrapper udmCollection,const pragm
 					auto udmReturnValue = udmReturnValues[idx++];
 					save_parameter(udmReturnValue,param);
 				}
+
+				auto &source = overload.GetSource();
+				if(source.has_value())
+				{
+					auto udmSource = udmOverload["source"];
+					udmSource["moduleName"] = source->moduleName;
+					udmSource["fileName"] = source->fileName;
+					udmSource["line"] = source->line;
+				}
+
+				auto &url = overload.GetURL();
+				if(!url.empty())
+					udmOverload["url"] = url;
 			}
 		}
 
@@ -222,7 +237,8 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 		auto f = Function::Create(*this,std::string{pair.key});
 		auto &udmFunction = pair.property;
 		udmFunction["desc"](f.m_description);
-		udmFunction["url"](f.m_url);
+		if(!f.m_url.empty())
+			udmFunction["url"](f.m_url);
 		udmFunction["type"](f.m_type);
 		udm::to_flags(udmFunction["flags"],f.m_flags);
 		udm::to_flags(udmFunction["gameStateFlags"],f.m_gameStateFlags);
@@ -261,6 +277,22 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 			{
 				returnValues.push_back({});
 				fLoadParam(pair.property,returnValues.back());
+			}
+
+			auto udmSource = udmOverload["source"];
+			if(udmSource)
+			{
+				Source source {};
+				udmSource["moduleName"](source.moduleName);
+				udmSource["fileName"](source.fileName);
+				udmSource["line"](source.line);
+			}
+
+			if(udmOverload["url"])
+			{
+				std::string url;
+				udmOverload["url"](url);
+				overload.SetURL(url);
 			}
 		}
 
