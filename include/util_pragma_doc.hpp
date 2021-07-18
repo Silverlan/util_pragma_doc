@@ -16,6 +16,10 @@ class VFilePtrInternalReal;
 namespace udm {struct AssetData; using AssetDataArg = const AssetData&; struct LinkedPropertyWrapper;};
 namespace pragma
 {
+	namespace detail
+	{
+		std::string get_wiki_url(const std::string &fullPath,bool isFunOrMember);
+	};
 	namespace doc
 	{
 		class Collection;

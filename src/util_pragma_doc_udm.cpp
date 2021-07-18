@@ -339,10 +339,12 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 		auto udmEnums = udmEnumSet["enums"];
 		auto &enums = es->GetEnums();
 		enums.reserve(udmEnums.GetSize());
-		for(auto &udmEnum : udmEnums)
+		for(auto &pair : udmEnums.ElIt())
 		{
 			enums.push_back(Enum::Create(*es));
 			auto &e = enums.back();
+			e.SetName(std::string{pair.key});
+			auto &udmEnum = pair.property;
 			udmEnum["value"](e.m_value);
 			udmEnum["desc"](e.m_description);
 			udmEnum["type"](e.m_type);

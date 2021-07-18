@@ -68,7 +68,6 @@ std::string doc::EnumSet::GetWikiURL() const
 	auto *pCollection = GetCollection();
 	if(pCollection == nullptr)
 		return "";
-	auto url = pCollection->GetWikiURL();
-	return url +"_en_" +ustring::name_to_identifier(GetName());
+	return detail::get_wiki_url(GetFullName(),false);
 }
 #pragma optimize("",on)

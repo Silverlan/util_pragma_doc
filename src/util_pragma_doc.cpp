@@ -4,6 +4,22 @@
 
 #include "util_pragma_doc.hpp"
 #include <array>
+#include <sharedutils/util_string.h>
 #include <fsys/filesystem.h>
 
 using namespace pragma;
+
+std::string pragma::detail::get_wiki_url(const std::string &fullPath,bool isFunOrMember)
+{
+	auto url = fullPath;
+	ustring::replace(url,".","/");
+
+	if(isFunOrMember)
+	{
+		auto p = url.rfind('/');
+		if(p != std::string::npos)
+			url[p] = '#';
+	}
+	url = "https://wiki.pragma-engine.com/api/docs/" +url;
+	return url;
+}

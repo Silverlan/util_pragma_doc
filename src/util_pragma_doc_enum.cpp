@@ -49,7 +49,10 @@ const std::string &doc::Enum::GetValue() const {return m_value;}
 const std::string &doc::Enum::GetDescription() const {return m_description;}
 doc::Enum::Type doc::Enum::GetType() const {return m_type;}
 doc::GameStateFlags doc::Enum::GetGameStateFlags() const {return m_gameStateFlags;}
-std::string doc::Enum::GetWikiURL() const {return (m_enumSet.expired() == false) ? m_enumSet.lock()->GetWikiURL() : "";}
+std::string doc::Enum::GetWikiURL() const
+{
+	return (m_enumSet.expired() == false) ? detail::get_wiki_url(GetFullName(),false) : "";
+}
 const doc::EnumSet *doc::Enum::GetEnumSet() const {return m_enumSet.lock().get();}
 void doc::Enum::SetEnumSet(EnumSet &es) {m_enumSet = es.shared_from_this();}
 #pragma optimize("",on)

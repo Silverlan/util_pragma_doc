@@ -63,11 +63,7 @@ const std::optional<std::string> &doc::Member::GetDefault() const {return m_defa
 doc::Member::Mode doc::Member::GetMode() const {return m_mode;}
 std::string doc::Member::GetWikiURL() const
 {
-	auto *pCollection = GetCollection();
-	if(pCollection == nullptr)
-		return "";
-	auto url = pCollection->GetWikiURL();
-	return url +"_mb_" +ustring::name_to_identifier(GetName());
+	return detail::get_wiki_url(GetFullName(),true);
 }
 void doc::Member::SetName(const std::string &name) {m_name = name;}
 void doc::Member::SetType(const std::string &type) {m_type = type;}

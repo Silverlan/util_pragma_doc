@@ -132,10 +132,6 @@ void doc::Function::AddRelated(const std::string &related) {m_related.push_back(
 void doc::Function::AddGroup(const Group &group) {m_groups.push_back(group);}
 std::string doc::Function::GetWikiURL() const
 {
-	auto *pCollection = GetCollection();
-	if(pCollection == nullptr)
-		return "";
-	auto url = pCollection->GetWikiURL();
-	return url +"_fc_" +ustring::name_to_identifier(GetName());
+	return detail::get_wiki_url(GetFullName(),true);
 }
 #pragma optimize("",on)

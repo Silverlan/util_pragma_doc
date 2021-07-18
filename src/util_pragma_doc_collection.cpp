@@ -106,20 +106,7 @@ void doc::Collection::StripBaseDefinitionsFromDerivedCollections(Collection &roo
 void doc::Collection::StripBaseDefinitionsFromDerivedCollections() {StripBaseDefinitionsFromDerivedCollections(*this);}
 std::string doc::Collection::GetWikiURL() const
 {
-	std::string url {};
-	auto *parent = GetParent();
-	if(parent != nullptr)
-		url = parent->GetWikiURL() +"_";
-	else
-		url = doc::GetWikiURL() +"?title=";
-	auto flags = GetFlags();
-	if((flags &Flags::Base) != Flags::None)
-		url += "base_";
-	else if((flags &Flags::Class) != Flags::None)
-		url += "class_";
-	else if((flags &Flags::Library) != Flags::None)
-		url += "lib_";
-	return url +ustring::name_to_identifier(GetName());
+	return detail::get_wiki_url(GetFullName(),false);
 }
 void doc::Collection::AddFunction(const Function &function)
 {
