@@ -53,7 +53,7 @@ static void write_zerobrane_function(std::stringstream &ss,const pragma::doc::Fu
 			else
 				bFirst = false;
 			
-			ss<<param.GetName()<<": "<<param.GetType();
+			ss<<param.GetName()<<": "<<param.GetFullType();
 		}
 		for(auto i=decltype(numOptional){0u};i<numOptional;++i)
 			ss<<"]";
@@ -68,11 +68,11 @@ static void write_zerobrane_function(std::stringstream &ss,const pragma::doc::Fu
 				ss<<", ";
 			else
 				bFirst = false;
-			ss<<returnValue.GetName()<<": "<<returnValue.GetType();
+			ss<<returnValue.GetName()<<": "<<returnValue.GetFullType();
 		}
 		ss<<")\"";
 		if(returnValues.empty() == false)
-			ss<<",\n"<<t<<"\tvaluetype = \"" +returnValues.front().GetType() +"\"\n";
+			ss<<",\n"<<t<<"\tvaluetype = \"" +returnValues.front().GetFullType() +"\"\n";
 		else
 			ss<<"\n";
 	}
@@ -89,7 +89,7 @@ static void write_zerobrane_member(std::stringstream &ss,const pragma::doc::Memb
 	ss<<t<<"[\""<<member.GetName()<<"\"] = {\n";
 	ss<<t<<"\ttype = \"value\",\n";
 	ss<<t<<"\tdescription = [["<<normalize_text(member.GetDescription())<<"]],\n";
-	ss<<t<<"\tvaluetype = \""<<member.GetType()<<"\"\n";
+	ss<<t<<"\tvaluetype = \""<<member.GetType().GetFullType()<<"\"\n";
 	ss<<t<<"}";
 }
 

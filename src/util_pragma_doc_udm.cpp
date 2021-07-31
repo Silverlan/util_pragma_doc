@@ -31,24 +31,35 @@ static std::string generate_identifier(const pragma::doc::Collection &c)
 	return name;
 }
 
+static void save_variant(udm::LinkedPropertyWrapper &udmVariant,const pragma::doc::Variant &variant)
+{
+	udmVariant["name"] = variant.name;
+	udmVariant["flags"] = udm::flags_to_string(variant.flags);
+
+	if(!variant.typeParameters.empty())
+	{
+		auto udmTypeParams = udmVariant.AddArray("typeParameters",variant.typeParameters.size());
+		uint32_t idx = 0;
+		for(auto &typeParam : variant.typeParameters)
+		{
+			auto udmTypeParam = udmTypeParams[idx++];
+			save_variant(udmTypeParam,typeParam);
+		}
+	}
+}
+
 static void save_parameter(udm::LinkedPropertyWrapper &udmParam,const pragma::doc::Parameter &param)
 {
 	udmParam["name"] = param.GetName();
-	udmParam["type"] = param.GetType();
 	udmParam["flags"] = udm::flags_to_string(param.GetFlags());
 	udmParam["gameStateFlags"] = udm::flags_to_string(param.GetGameStateFlags());
+
+	auto udmType = udmParam["type"];
+	save_variant(udmType,param.GetType());
 
 	auto &def = param.GetDefault();
 	if(def.has_value())
 		udmParam["default"] = *def;
-
-	auto &subType = param.GetSubType();
-	if(subType.has_value())
-		udmParam["subType"] = *subType;
-
-	auto &subSubType = param.GetSubSubType();
-	if(subSubType.has_value())
-		udmParam["subSubType"] = *subSubType;
 }
 
 static void save_collection(udm::LinkedPropertyWrapper udmCollection,const pragma::doc::Collection &collection)
@@ -139,7 +150,8 @@ static void save_collection(udm::LinkedPropertyWrapper udmCollection,const pragm
 	for(auto &m : collection.GetMembers())
 	{
 		auto udmMember = udmMembers[m.GetName()];
-		udmMember["type"] = m.GetType();
+		auto udmType = udmMember["type"];
+		save_variant(udmType,m.GetType());
 		udmMember["desc"] = m.GetDescription();
 		udmMember["gameStateFlags"] = udm::flags_to_string(m.GetGameStateFlags());
 		auto &def = m.GetDefault();
@@ -189,6 +201,21 @@ bool doc::Collection::Save(udm::AssetDataArg outData,std::string &outErr)
 	return true;
 }
 
+static void load_variant(udm::LinkedPropertyWrapper &udmVariant,pragma::doc::Variant &variant)
+{
+	udmVariant["name"](variant.name);
+	udm::to_flags(udmVariant["flags"],variant.flags);
+
+	auto udmTypeParams = udmVariant["typeParameters"];
+	auto n = udmTypeParams.GetSize();
+	variant.typeParameters.reserve(n);
+	for(auto &udmTypeParam : udmTypeParams)
+	{
+		variant.typeParameters.push_back({});
+		load_variant(udmTypeParam,variant.typeParameters.back());
+	}
+}
+
 void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 {
 	udmCollection["desc"](m_description);
@@ -198,9 +225,13 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 
 	auto fLoadParam = [](udm::LinkedPropertyWrapper &udmParam,pragma::doc::Parameter &param) {
 		udmParam["name"](param.m_name);
-		udmParam["type"](param.m_type);
 		udm::to_flags(udmParam["flags"],param.m_flags);
 		udm::to_flags(udmParam["gameStateFlags"],param.m_gameStateFlags);
+		
+		auto udmType = udmParam["type"];
+		Variant type;
+		load_variant(udmType,type);
+		param.SetType(std::move(type));
 
 		{
 			auto udmDefault = udmParam["default"];
@@ -208,24 +239,6 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 			{
 				param.m_default = std::string{};
 				udmDefault(*param.m_default);
-			}
-		}
-
-		{
-			auto udmSubType = udmParam["subType"];
-			if(udmSubType)
-			{
-				param.m_subType = std::string{};
-				udmSubType(*param.m_subType);
-			}
-		}
-
-		{
-			auto udmSubSubType = udmParam["subSubType"];
-			if(udmSubSubType)
-			{
-				param.m_subSubType = std::string{};
-				udmSubSubType(*param.m_subSubType);
 			}
 		}
 	};
@@ -314,7 +327,8 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 	{
 		auto member = Member::Create(*this,std::string{pair.key});
 		auto &udmMember = pair.property;
-		udmMember["type"](member.m_type);
+		auto udmType = udmMember["type"];
+		load_variant(udmType,member.m_type);
 		udmMember["desc"](member.m_description);
 		udm::to_flags(udmMember["gameStateFlags"],member.m_gameStateFlags);
 

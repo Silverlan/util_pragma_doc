@@ -16,24 +16,6 @@ bool doc::Enum::operator==(const Enum &other) const
 {
 	return m_name == other.m_name && m_value == other.m_value && m_type == other.m_type;
 }
-doc::Enum doc::Enum::Read(const EnumSet &enumSet,std::shared_ptr<VFilePtrInternal> &f)
-{
-	Enum e {enumSet};
-	e.m_name = f->ReadString();
-	e.m_value = f->ReadString();
-	e.m_type = f->Read<Type>();
-	e.m_gameStateFlags = f->Read<GameStateFlags>();
-	e.m_description = f->ReadString();
-	return e;
-}
-void doc::Enum::Write(std::shared_ptr<VFilePtrInternalReal> &f) const
-{
-	f->WriteString(m_name);
-	f->WriteString(m_value);
-	f->Write<Type>(m_type);
-	f->Write<GameStateFlags>(m_gameStateFlags);
-	f->WriteString(m_description);
-}
 const std::string &doc::Enum::GetName() const {return m_name;}
 std::string doc::Enum::GetFullName() const
 {

@@ -8,14 +8,4 @@
 using namespace pragma;
 
 doc::Group doc::Group::Create() {return {};}
-doc::Group doc::Group::Read(std::shared_ptr<VFilePtrInternal> &f)
-{
-	Group group {};
-	group.m_name = f->ReadString();
-	return group;
-}
-void doc::Group::Write(std::shared_ptr<VFilePtrInternalReal> &f) const
-{
-	f->WriteString(m_name);
-}
 const std::string &doc::Group::GetName() const {return m_name;}
