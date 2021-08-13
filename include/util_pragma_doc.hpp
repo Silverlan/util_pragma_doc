@@ -74,7 +74,16 @@ namespace pragma
 				Enum = Interface<<1u,
 
 				Optional = Enum<<1u,
-				SmartPtr = Optional<<1u
+				SmartPtr = Optional<<1u,
+
+				UnknownType = SmartPtr<<1u,
+
+				Final = UnknownType<<1u,
+				Fundamental = Final<<1u,
+				Arithmetic = Fundamental<<1u,
+				Abstract = Arithmetic<<1u,
+				Polymorphic = Abstract<<1u,
+				Trivial = Polymorphic<<1u
 			};
 			std::string name;
 			Flags flags = Flags::None;
@@ -105,6 +114,7 @@ namespace pragma
 			bool operator!=(const Parameter &other) const {return !operator==(other);}
 			const std::string &GetName() const;
 			const Variant &GetType() const;
+			Variant &GetType();
 			std::string GetFullType() const;
 			const std::optional<std::string> &GetDefault() const;
 			Flags GetFlags() const;
@@ -444,6 +454,7 @@ namespace pragma
 			const std::string &GetURL() const;
 			Flags GetFlags() const;
 			const Collection *GetParent() const;
+			Collection *GetParent();
 			virtual std::string GetWikiURL() const override;
 			void StripBaseDefinitionsFromDerivedCollections();
 			Collection *FindChildCollection(const std::string_view &name);

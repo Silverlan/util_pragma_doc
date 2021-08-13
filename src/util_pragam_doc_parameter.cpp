@@ -105,7 +105,8 @@ bool doc::Parameter::operator==(const Parameter &other) const
 		m_type == other.m_type;
 }
 const std::string &doc::Parameter::GetName() const {return m_name;}
-const doc::Variant &doc::Parameter::GetType() const {return m_type;}
+const doc::Variant &doc::Parameter::GetType() const {return const_cast<Parameter*>(this)->GetType();}
+doc::Variant &doc::Parameter::GetType() {return m_type;}
 std::string doc::Parameter::GetFullType() const
 {
 	return ""; // TODO m_type.GetFullType();

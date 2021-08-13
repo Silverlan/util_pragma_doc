@@ -36,7 +36,8 @@ std::string doc::Collection::GetFullName() const
 const std::string &doc::Collection::GetDescription() const {return m_description;}
 const std::string &doc::Collection::GetURL() const {return m_url;}
 doc::Collection::Flags doc::Collection::GetFlags() const {return m_flags;}
-const doc::Collection *doc::Collection::GetParent() const {return m_parent.lock().get();}
+const doc::Collection *doc::Collection::GetParent() const {return const_cast<Collection*>(this)->GetParent();}
+doc::Collection *doc::Collection::GetParent() {return m_parent.lock().get();}
 doc::Collection *doc::Collection::FindChildCollection(const std::string_view &name)
 {
 	std::string spath {name};
