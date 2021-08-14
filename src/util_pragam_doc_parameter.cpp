@@ -16,12 +16,14 @@ bool doc::Variant::IsOptional() const
 {
 	return umath::is_flag_set(flags,Flags::Optional);
 }
-std::string doc::Variant::GetFormattedType() const
+std::string doc::Variant::GetFormattedType(ParameterFormatType formatType,const std::function<void(const Variant&,std::string&)> &typeTranslator) const
 {
 	std::string s;
 
-	if(!name.empty())
-		s += name +": ";
+	auto tmpName = name;
+	if(typeTranslator)
+		typeTranslator(*this,tmpName);
+	s += tmpName;
 
 	auto first = true;
 	for(auto &variant : typeParameters)
@@ -36,7 +38,7 @@ std::string doc::Variant::GetFormattedType() const
 		auto multiple = (variant.typeParameters.size() > 1 && !optional);
 		if(multiple)
 			s += "(";
-		s += variant.GetFormattedType();
+		s += variant.GetFormattedType(formatType,typeTranslator);
 		if(multiple)
 			s += ")";
 		if(optional)
@@ -70,9 +72,9 @@ doc::Parameter doc::Parameter::Create(const std::string &name)
 	param.SetName(name);
 	return param;
 }
-std::string doc::Parameter::GetFormattedParameterString(const std::vector<Parameter> &params)
+std::string doc::Parameter::GetFormattedParameterString(const std::vector<Parameter> &params,ParameterFormatType formatType,bool includeParameterNames,const std::function<void(const Variant&,std::string&)> &typeTranslator)
 {
-	std::string s = "(";
+	std::string s = "";
 	auto first = true;
 	auto curOptional = false;
 	for(auto &param : params)
@@ -92,11 +94,18 @@ std::string doc::Parameter::GetFormattedParameterString(const std::vector<Parame
 			first = false;
 		else
 			s += ",";
-		s += type.GetFormattedType();
+
+		auto &name = param.GetName();
+		if(includeParameterNames && !name.empty() && formatType == ParameterFormatType::ZeroBrane)
+			s += name +": ";
+
+		s += type.GetFormattedType(formatType,typeTranslator);
+
+		if(includeParameterNames && !name.empty() && formatType == ParameterFormatType::Generic)
+			s += " " +name;
 	}
 	if(curOptional)
 		s += "]";
-	s += ")";
 	return s;
 }
 bool doc::Parameter::operator==(const Parameter &other) const

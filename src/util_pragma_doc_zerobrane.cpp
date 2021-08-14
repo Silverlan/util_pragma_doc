@@ -38,23 +38,8 @@ static void write_zerobrane_function(std::stringstream &ss,const pragma::doc::Fu
 		ss<<t<<"\targs = \"(";
 		auto bFirst = true;
 		auto numOptional = 0u;
-		for(auto &param : overload.GetParameters())
-		{
-			auto bOptional = param.GetDefault().has_value();
-			if(bOptional == true)
-			{
-				if(bFirst == false)
-					ss<<" ";
-				ss<<"[";
-				++numOptional;
-			}
-			if(bFirst == false)
-				ss<<", ";
-			else
-				bFirst = false;
-			
-			ss<<param.GetName()<<": "<<param.GetFullType();
-		}
+		auto strParams = pragma::doc::Parameter::GetFormattedParameterString(overload.GetParameters(),pragma::doc::ParameterFormatType::ZeroBrane);
+		ss<<strParams;
 		for(auto i=decltype(numOptional){0u};i<numOptional;++i)
 			ss<<"]";
 		ss<<")\",\n";
@@ -62,17 +47,11 @@ static void write_zerobrane_function(std::stringstream &ss,const pragma::doc::Fu
 		ss<<t<<"\treturns = \"(";
 		bFirst = true;
 		auto &returnValues = overload.GetReturnValues();
-		for(auto &returnValue : returnValues)
-		{
-			if(bFirst == false)
-				ss<<", ";
-			else
-				bFirst = false;
-			ss<<returnValue.GetName()<<": "<<returnValue.GetFullType();
-		}
+		auto strRet = pragma::doc::Parameter::GetFormattedParameterString(overload.GetReturnValues(),pragma::doc::ParameterFormatType::ZeroBrane,false);
+		ss<<strRet;
 		ss<<")\"";
 		if(returnValues.empty() == false)
-			ss<<",\n"<<t<<"\tvaluetype = \"" +returnValues.front().GetFullType() +"\"\n";
+			ss<<",\n"<<t<<"\tvaluetype = \"" +returnValues.front().GetType().GetFullType() +"\"\n";
 		else
 			ss<<"\n";
 	}

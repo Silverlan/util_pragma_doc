@@ -9,6 +9,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <functional>
 #include <mathutil/umath.h>
 
 class VFilePtrInternal;
@@ -56,6 +57,11 @@ namespace pragma
 			friend Collection;
 			mutable std::weak_ptr<const Collection> m_collection = {};
 		};
+		enum class ParameterFormatType : uint8_t
+		{
+			Generic = 0,
+			ZeroBrane
+		};
 		struct Variant
 		{
 			enum class Flags : uint32_t
@@ -93,7 +99,7 @@ namespace pragma
 			bool operator!=(const Variant &other) const {return !operator==(other);}
 
 			bool IsOptional() const;
-			std::string GetFormattedType() const;
+			std::string GetFormattedType(ParameterFormatType formatType=ParameterFormatType::Generic,const std::function<void(const Variant&,std::string&)> &typeTranslator=nullptr) const;
 		};
 		class Parameter
 		{
@@ -105,7 +111,7 @@ namespace pragma
 				Volatile = Variadic<<1u
 			};
 			static Parameter Create(const std::string &name);
-			static std::string GetFormattedParameterString(const std::vector<Parameter> &params);
+			static std::string GetFormattedParameterString(const std::vector<Parameter> &params,ParameterFormatType formatType=ParameterFormatType::Generic,bool includeParameterNames=true,const std::function<void(const Variant&,std::string&)> &typeTranslator=nullptr);
 			Parameter(const Parameter&)=default;
 			Parameter(Parameter&&)=default;
 			Parameter &operator=(const Parameter&)=default;

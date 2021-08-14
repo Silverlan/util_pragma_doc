@@ -280,7 +280,7 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 			for(auto &udmParam : udmParams)
 			{
 				params.push_back({});
-				fLoadParam(pair.property,params.back());
+				fLoadParam(udmParam,params.back());
 			}
 
 			auto udmReturnValues = udmOverload["returnValues"];
@@ -289,7 +289,7 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 			for(auto &udmReturnValue : udmReturnValues)
 			{
 				returnValues.push_back({});
-				fLoadParam(pair.property,returnValues.back());
+				fLoadParam(udmReturnValue,returnValues.back());
 			}
 
 			auto udmSource = udmOverload["source"];
