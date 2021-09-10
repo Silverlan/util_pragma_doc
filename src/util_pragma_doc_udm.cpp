@@ -5,6 +5,7 @@
 #include "util_pragma_doc.hpp"
 #include <udm.hpp>
 #include <sharedutils/magic_enum.hpp>
+#include <sharedutils/util_string.h>
 
 using namespace pragma;
 #pragma optimize("",off)
