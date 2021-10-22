@@ -30,6 +30,11 @@ runs:
             repo_name: 'util_pragma_doc'
             cmake_var: 'DEPENDENCY_UTIL_PRAGMA_DOC_INCLUDE'
             dir: 'external_libs'
+            
+    - name: Set CMake variable
+      uses: Silverlan/common_actions/define_cmake_var@main
+      with:
+        cmake_var: ' -DCONFIG_ENABLE_EXECUTABLE_FLAG=OFF'
 
     - name: Build submodule - util_udm
       uses: Silverlan/util_udm/github_actions/build@master
