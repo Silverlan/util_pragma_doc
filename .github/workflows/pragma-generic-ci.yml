@@ -1,9 +1,9 @@
 name: Build
 on:
   push:
-    branches: [ master, actions ]
+    branches: [ main, actions ]
   pull_request:
-    branches: [ master, actions ]
+    branches: [ main, actions ]
 
 jobs:
   build:
