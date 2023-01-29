@@ -10,22 +10,21 @@
 #include <sstream>
 #include <sharedutils/util_string.h>
 
-int main(int argc,char *argv[])
+int main(int argc, char *argv[])
 {
-	auto f = FileManager::OpenFile("pragma.wdd","rb");
-	if(f != nullptr)
-	{
+	auto f = FileManager::OpenFile("pragma.wdd", "rb");
+	if(f != nullptr) {
 		std::vector<pragma::doc::PCollection> collections {};
-		pragma::doc::load_collections(f,collections);
+		pragma::doc::load_collections(f, collections);
 		f = nullptr;
 
-		auto fZb = FileManager::OpenFile<VFilePtrReal>("pragma.lua","w");
+		auto fZb = FileManager::OpenFile<VFilePtrReal>("pragma.lua", "w");
 		fZb->WriteString(pragma::doc::zerobrane::generate_autocomplete_script(collections));
 		fZb = nullptr;
 	}
-	std::cout<<"Complete!"<<std::endl;
+	std::cout << "Complete!" << std::endl;
 	char c;
-	std::cin>>c;
+	std::cin >> c;
 	return EXIT_SUCCESS;
 }
 #endif

@@ -7,10 +7,8 @@
 
 #include <string>
 
-namespace pragma
-{
-	namespace doc
-	{
+namespace pragma {
+	namespace doc {
 		std::string GetWikiURL();
 	}
 };

@@ -7,5 +7,5 @@
 
 using namespace pragma;
 
-doc::Group doc::Group::Create() {return {};}
-const std::string &doc::Group::GetName() const {return m_name;}
+doc::Group doc::Group::Create() { return {}; }
+const std::string &doc::Group::GetName() const { return m_name; }

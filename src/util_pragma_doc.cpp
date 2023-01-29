@@ -9,17 +9,16 @@
 
 using namespace pragma;
 
-std::string pragma::detail::get_wiki_url(const std::string &fullPath,bool isFunOrMember)
+std::string pragma::detail::get_wiki_url(const std::string &fullPath, bool isFunOrMember)
 {
 	auto url = fullPath;
-	ustring::replace(url,".","/");
+	ustring::replace(url, ".", "/");
 
-	if(isFunOrMember)
-	{
+	if(isFunOrMember) {
 		auto p = url.rfind('/');
 		if(p != std::string::npos)
 			url[p] = '#';
 	}
-	url = "https://wiki.pragma-engine.com/api/docs/" +url;
+	url = "https://wiki.pragma-engine.com/api/docs/" + url;
 	return url;
 }

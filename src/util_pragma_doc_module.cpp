@@ -7,5 +7,5 @@
 
 using namespace pragma;
 
-const std::string &doc::Module::GetName() const {return m_name;}
-const std::string &doc::Module::GetTarget() const {return m_target;}
+const std::string &doc::Module::GetName() const { return m_name; }
+const std::string &doc::Module::GetTarget() const { return m_target; }

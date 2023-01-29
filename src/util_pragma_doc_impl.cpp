@@ -4,4 +4,4 @@
 
 #include "util_pragma_doc_impl.hpp"
 
-std::string pragma::doc::GetWikiURL() {return "https://wiki.pragma-engine.com/index.php";}
+std::string pragma::doc::GetWikiURL() { return "https://wiki.pragma-engine.com/index.php"; }
