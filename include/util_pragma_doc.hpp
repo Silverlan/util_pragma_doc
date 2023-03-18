@@ -31,6 +31,13 @@ namespace pragma {
 		namespace zerobrane {
 			std::string generate_autocomplete_script(const std::vector<pragma::doc::PCollection> &collections);
 		};
+		namespace luals {
+			struct Doc {
+				std::stringstream &GetStream(const std::string &name);
+				std::unordered_map<std::string, std::stringstream> streams;
+			};
+			Doc generate_doc(const std::vector<pragma::doc::PCollection> &collections);
+		};
 
 		enum class GameStateFlags : uint32_t {
 			None = 0u,

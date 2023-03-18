@@ -4,6 +4,7 @@
 
 #include "util_pragma_doc.hpp"
 #include <sharedutils/util_string.h>
+#include <unordered_set>
 #include <sstream>
 
 static std::string normalize_text(const std::string &text)
@@ -153,4 +154,186 @@ std::string pragma::doc::zerobrane::generate_autocomplete_script(const std::vect
 	generate_zerobrane_autocomplete(ss, collections);
 	ss << "}";
 	return ss.str();
+}
+
+static void resolve_keywords(std::string &val)
+{
+	static std::unordered_set<std::string> keywords {"and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "not", "or", "repeat", "return", "then", "true", "until", "while"};
+	auto it = keywords.find(val);
+	if(it != keywords.end())
+		val = val + "_";
+}
+
+static void normalize_argument(std::string &val)
+{
+	resolve_keywords(val);
+	if(ustring::is_integer(val))
+		val = "arg" + val;
+}
+
+static std::string get_ldoc_type_name(const pragma::doc::Variant &var)
+{
+	static std::unordered_map<std::string, std::string> typeTranslations {{"uint8", "int"}, {"int8", "int"}, {"uint16", "int"}, {"int16", "int"}, {"uint32", "int"}, {"int32", "int"}, {"uint64", "int"}, {"int64", "int"}, {"float", "number"}, {"double", "number"}};
+	auto type = var.name; //.GetFullType();
+	auto it = typeTranslations.find(type);
+	if(it != typeTranslations.end())
+		type = it->second;
+	resolve_keywords(type);
+	return type;
+}
+
+static std::string get_argument_list(const pragma::doc::Overload &overload, bool includeTypes = false)
+{
+	std::string argList;
+	auto first = true;
+	for(auto &param : overload.GetParameters()) {
+		if(first)
+			first = false;
+		else
+			argList += ", ";
+		auto paramName = param.GetName();
+		normalize_argument(paramName);
+		argList += paramName;
+		if(includeTypes) {
+			argList += ": ";
+			argList += get_ldoc_type_name(param.GetType());
+		}
+	}
+	return argList;
+}
+
+std::stringstream &pragma::doc::luals::Doc::GetStream(const std::string &name)
+{
+	auto it = streams.find(name);
+	if(it == streams.end()) {
+		it = streams.insert(std::make_pair(name, std::stringstream {})).first;
+		it->second << "--- @meta\n";
+	}
+	return it->second;
+}
+
+static void generate_ldoc_autocomplete(pragma::doc::luals::Doc &docFileManager, std::stringstream &ssParent, const std::vector<pragma::doc::PCollection> &collections, const std::string &classPrefix, const std::string &t = "\t")
+{
+	std::string prefix = "--- ";
+	auto bFirst = true;
+	for(auto &collection : collections) {
+		std::stringstream *libStream = nullptr;
+		if(umath::is_flag_set(collection->GetFlags(), pragma::doc::Collection::Flags::Library)) {
+			libStream = &docFileManager.GetStream(collection->GetName());
+		}
+		auto &ss = libStream ? *libStream : ssParent;
+		ss << prefix << collection->GetDescription() << "\n";
+		ss << prefix << "@class " << classPrefix << collection->GetName();
+		auto &derivedFrom = collection->GetDerivedFrom();
+		if(!derivedFrom.empty()) {
+			ss << ": ";
+			auto first = true;
+			for(auto &df : derivedFrom) {
+				if(first)
+					first = false;
+				else
+					ss << ", ";
+				ss << df->GetName();
+			}
+		}
+		ss << "\n";
+
+		for(auto &member : collection->GetMembers()) {
+			auto &type = member.GetType();
+			ss << prefix << "@field " << member.GetName() << " " << get_ldoc_type_name(type) << " " << member.GetDescription() << "\n";
+		}
+
+		for(auto &fc : collection->GetFunctions()) {
+			auto &name = fc.GetName();
+			if(name != "__init")
+				continue;
+			for(auto &overload : fc.GetOverloads())
+				ss << prefix << "@overload fun(" + get_argument_list(overload, true) + "):" << classPrefix << collection->GetName() << "\n";
+		}
+
+		ss << classPrefix << collection->GetName() << " = {}\n";
+		ss << "\n";
+
+		auto subName = classPrefix + collection->GetName();
+		auto subClass = subName + '.';
+		for(auto &fc : collection->GetFunctions()) {
+			auto &name = fc.GetName();
+			if(name == "__init")
+				continue;
+			auto &overloads = fc.GetOverloads();
+			if(overloads.empty())
+				continue;
+			auto &mainOverload = overloads.front();
+			ss << prefix << fc.GetDescription() << "\n";
+
+			for(auto &param : mainOverload.GetParameters()) {
+				ss << prefix << "@param " << param.GetName() << " " << get_ldoc_type_name(param.GetType()) << "\n";
+			}
+
+			auto &returnValues = mainOverload.GetReturnValues();
+			if(!returnValues.empty()) {
+				for(auto &val : returnValues) {
+					auto returnType = get_ldoc_type_name(val.GetType());
+					if(returnType == "nil")
+						continue;
+					ss << prefix << "@return " << returnType << " " << val.GetName() << "\n";
+				}
+			}
+
+			for(auto i = decltype(overloads.size()) {1u}; i < overloads.size(); ++i) {
+				auto &overload = overloads[i];
+				ss << prefix << "@overload fun(" << get_argument_list(overload, true) << "): ";
+				auto first = true;
+				for(auto &val : returnValues) {
+					auto returnType = get_ldoc_type_name(val.GetType());
+					if(returnType == "nil")
+						continue;
+					if(first)
+						first = false;
+					else
+						ss << ", ";
+					ss << returnType;
+				}
+				ss << "\n";
+			}
+
+			ss << "function " << subName;
+			switch(fc.GetType()) {
+			case pragma::doc::Function::Type::Method:
+				ss << ":";
+				break;
+			default:
+				ss << ".";
+				break;
+			}
+			ss << fc.GetName() << "(" << get_argument_list(mainOverload) << ") end\n";
+			ss << "\n";
+		}
+		ss << "\n";
+
+		for(auto &es : collection->GetEnumSets()) {
+			ss << prefix << "@enum " << es->GetName() << "\n";
+			//ss << subClass << es->GetName() << " = {\n";
+			ss << subName << " = {\n";
+			for(auto &e : es->GetEnums()) {
+				ss << "\t" << e.GetName() << " = " << e.GetValue() << ",\n";
+			}
+			ss << "}\n";
+			ss << "\n";
+		}
+
+		auto &children = collection->GetChildren();
+		if(children.empty() == false) {
+			generate_ldoc_autocomplete(docFileManager, ss, children, subClass, t + "\t\t");
+		}
+	}
+}
+
+pragma::doc::luals::Doc pragma::doc::luals::generate_doc(const std::vector<pragma::doc::PCollection> &collections)
+{
+	// See https://github.com/LuaLS/lua-language-server/wiki/Annotations
+	pragma::doc::luals::Doc docFileManager {};
+	auto &ss = docFileManager.GetStream("root");
+	generate_ldoc_autocomplete(docFileManager, ss, collections, "");
+	return docFileManager;
 }
