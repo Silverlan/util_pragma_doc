@@ -89,6 +89,7 @@ if(WIN32)
 endif()
 endif()
 
+target_link_libraries(${PROJ_NAME} util_udm)
 target_sources(${PROJ_NAME}
   PUBLIC
     FILE_SET cxx_modules TYPE CXX_MODULES FILES

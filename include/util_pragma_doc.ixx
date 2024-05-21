@@ -9,10 +9,7 @@
 #include <functional>
 #include <sharedutils/util.h>
 #include <sharedutils/magic_enum.hpp>
-#include <udm_types.hpp>
-#include <udm_type_structs.hpp>
 #include <mathutil/umath.h>
-#include <udm.hpp>
 
 class VFilePtrInternal;
 class VFilePtrInternalReal;
@@ -23,6 +20,8 @@ namespace udm {
 };
 
 export module util_pragma_doc;
+
+import udm;
 
 export namespace pragma {
 	namespace detail {
@@ -445,25 +444,14 @@ export namespace pragma {
 	};
 };
 
-#define REGISTER_BASIC_BITWISE_OPERATORS_SCOPED_ENUM2(typeA, typeB, enumType)                                                                                                                                                                                                                    \
-	export constexpr enumType operator|(const typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator| <typeA, typeB, enumType>(a, b); }                                                                                                                                        \
-	export enumType &operator|=(typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator|= <typeA, typeB>(a, b); }                                                                                                                                                               \
-	export constexpr enumType operator&(const typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator& <typeA, typeB, enumType>(a, b); }                                                                                                                                        \
-	export enumType &operator&=(typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator&= <typeA, typeB>(a, b); }                                                                                                                                                               \
-	export constexpr enumType operator<<(const typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator<< <typeA, typeB, enumType>(a, b); }                                                                                                                                      \
-	export enumType &operator<<=(typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator<<= <typeA, typeB>(a, b); }                                                                                                                                                             \
-	export constexpr enumType operator>>(const typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator>> <typeA, typeB, enumType>(a, b); }                                                                                                                                      \
-	export enumType &operator>>=(typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator>>= <typeA, typeB>(a, b); }
-
-#define REGISTER_BASIC_BITWISE_OPERATORS2(type)                                                                                                                                                                                                                                                  \
-	REGISTER_BASIC_BITWISE_OPERATORS_SCOPED_ENUM2(type, type, type)                                                                                                                                                                                                                              \
-	export constexpr type operator~(const type &a) { return static_cast<type>(~static_cast<std::underlying_type_t<type>>(a)); }
-
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::GameStateFlags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Member::Mode);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Parameter::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Function::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Collection::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::EnumSet::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Member::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Variant::Flags);
+export
+{
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::GameStateFlags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Member::Mode);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Parameter::Flags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Function::Flags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Collection::Flags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::EnumSet::Flags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Member::Flags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Variant::Flags);
+}

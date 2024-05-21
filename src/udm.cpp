@@ -6,12 +6,11 @@
 #include <sharedutils/magic_enum.hpp>
 #include <sharedutils/util_string.h>
 #include <sharedutils/util.h>
-#include <udm_types.hpp>
-#include <udm_type_structs.hpp>
 #include <mathutil/umath.h>
-#include <udm.hpp>
 
 module util_pragma_doc;
+
+import udm;
 
 using namespace pragma;
 
@@ -236,7 +235,7 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 
 	auto udmFunctions = udmCollection["functions"];
 	m_functions.reserve(udmFunctions.GetChildCount());
-	for(auto &pair : udmFunctions.ElIt()) {
+	for(auto &pair : udm::ElIt {udmFunctions}) {
 		auto f = Function::Create(*this, std::string {pair.key});
 		auto &udmFunction = pair.property;
 		udmFunction["desc"](f.m_description);
@@ -306,7 +305,7 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 
 	auto udmMembers = udmCollection["members"];
 	m_members.reserve(udmMembers.GetChildCount());
-	for(auto &pair : udmMembers.ElIt()) {
+	for(auto &pair : udm::ElIt {udmMembers}) {
 		auto member = Member::Create(*this, std::string {pair.key});
 		auto &udmMember = pair.property;
 		auto udmType = udmMember["type"];
@@ -325,7 +324,7 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 
 	auto udmEnumSets = udmCollection["enumSets"];
 	m_enumSets.reserve(udmEnumSets.GetChildCount());
-	for(auto &pair : udmEnumSets.ElIt()) {
+	for(auto &pair : udm::ElIt {udmEnumSets}) {
 		auto es = EnumSet::Create(std::string {pair.key}, this);
 		auto &udmEnumSet = pair.property;
 		udmEnumSet["underlyingType"](es->m_underlyingType);
@@ -333,7 +332,7 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 		auto udmEnums = udmEnumSet["enums"];
 		auto &enums = es->GetEnums();
 		enums.reserve(udmEnums.GetSize());
-		for(auto &pair : udmEnums.ElIt()) {
+		for(auto &pair : udm::ElIt {udmEnums}) {
 			enums.push_back(Enum::Create(*es));
 			auto &e = enums.back();
 			e.SetName(std::string {pair.key});
@@ -355,7 +354,7 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 	auto udmChildren = udmCollection["children"];
 	auto &children = m_children;
 	children.reserve(udmChildren.GetSize());
-	for(auto &pair : udmChildren.ElIt()) {
+	for(auto &pair : udm::ElIt {udmChildren}) {
 		auto child = Collection::Create();
 		child->m_parent = shared_from_this();
 		child->m_name = std::string {pair.key};
@@ -384,7 +383,7 @@ bool doc::Collection::LoadFromAssetData(const udm::AssetData &data, std::string 
 	m_name = "_G";
 	auto udmCollections = udm["collections"];
 	m_children.reserve(udmCollections.GetChildCount());
-	for(auto &pair : udmCollections.ElIt()) {
+	for(auto &pair : udm::ElIt {udmCollections}) {
 		auto child = Collection::Create();
 		child->m_name = std::string {pair.key};
 		child->Load(pair.property);
