@@ -2,11 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+#include "util_pragma_doc.hpp"
 #include <array>
 #include <sharedutils/util_string.h>
 #include <fsys/filesystem.h>
-
-module util_pragma_doc;
 
 using namespace pragma;
 
@@ -23,5 +22,3 @@ std::string pragma::detail::get_wiki_url(const std::string &fullPath, bool isFun
 	url = "https://wiki.pragma-engine.com/api/docs/" + url;
 	return url;
 }
-
-std::string pragma::doc::get_wiki_url() { return "https://wiki.pragma-engine.com/index.php"; }

@@ -2,16 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include <mathutil/transform.hpp>
+#include "util_pragma_doc.hpp"
+#include <udm.hpp>
 #include <sharedutils/magic_enum.hpp>
 #include <sharedutils/util_string.h>
-#include <sharedutils/util.h>
-#include <udm_types.hpp>
-#include <udm_type_structs.hpp>
-#include <mathutil/umath.h>
-#include <udm.hpp>
-
-module util_pragma_doc;
 
 using namespace pragma;
 

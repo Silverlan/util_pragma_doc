@@ -2,17 +2,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+#ifndef __UTIL_PRAGMA_DOC_HPP__
+#define __UTIL_PRAGMA_DOC_HPP__
+
 #include <vector>
 #include <memory>
 #include <optional>
 #include <string>
 #include <functional>
-#include <sharedutils/util.h>
-#include <sharedutils/magic_enum.hpp>
-#include <udm_types.hpp>
-#include <udm_type_structs.hpp>
 #include <mathutil/umath.h>
-#include <udm.hpp>
 
 class VFilePtrInternal;
 class VFilePtrInternalReal;
@@ -21,16 +19,11 @@ namespace udm {
 	using AssetDataArg = const AssetData &;
 	struct LinkedPropertyWrapper;
 };
-
-export module util_pragma_doc;
-
-export namespace pragma {
+namespace pragma {
 	namespace detail {
 		std::string get_wiki_url(const std::string &fullPath, bool isFunOrMember);
 	};
 	namespace doc {
-		std::string get_wiki_url();
-
 		class Collection;
 		class EnumSet;
 		using PCollection = std::shared_ptr<Collection>;
@@ -444,26 +437,13 @@ export namespace pragma {
 		};
 	};
 };
+REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::GameStateFlags);
+REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Member::Mode);
+REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Parameter::Flags);
+REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Function::Flags);
+REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Collection::Flags);
+REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::EnumSet::Flags);
+REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Member::Flags);
+REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Variant::Flags);
 
-#define REGISTER_BASIC_BITWISE_OPERATORS_SCOPED_ENUM2(typeA, typeB, enumType)                                                                                                                                                                                                                    \
-	export constexpr enumType operator|(const typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator| <typeA, typeB, enumType>(a, b); }                                                                                                                                        \
-	export enumType &operator|=(typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator|= <typeA, typeB>(a, b); }                                                                                                                                                               \
-	export constexpr enumType operator&(const typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator& <typeA, typeB, enumType>(a, b); }                                                                                                                                        \
-	export enumType &operator&=(typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator&= <typeA, typeB>(a, b); }                                                                                                                                                               \
-	export constexpr enumType operator<<(const typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator<< <typeA, typeB, enumType>(a, b); }                                                                                                                                      \
-	export enumType &operator<<=(typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator<<= <typeA, typeB>(a, b); }                                                                                                                                                             \
-	export constexpr enumType operator>>(const typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator>> <typeA, typeB, enumType>(a, b); }                                                                                                                                      \
-	export enumType &operator>>=(typeA &a, const typeB &b) { return umath::scoped_enum::bitwise::operator>>= <typeA, typeB>(a, b); }
-
-#define REGISTER_BASIC_BITWISE_OPERATORS2(type)                                                                                                                                                                                                                                                  \
-	REGISTER_BASIC_BITWISE_OPERATORS_SCOPED_ENUM2(type, type, type)                                                                                                                                                                                                                              \
-	export constexpr type operator~(const type &a) { return static_cast<type>(~static_cast<std::underlying_type_t<type>>(a)); }
-
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::GameStateFlags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Member::Mode);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Parameter::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Function::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Collection::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::EnumSet::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Member::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS2(pragma::doc::Variant::Flags);
+#endif

@@ -2,11 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include <fsys/filesystem.h>
+#include "util_pragma_doc_impl.hpp"
 
-module util_pragma_doc;
-
-using namespace pragma;
-
-doc::Group doc::Group::Create() { return {}; }
-const std::string &doc::Group::GetName() const { return m_name; }
+std::string pragma::doc::GetWikiURL() { return "https://wiki.pragma-engine.com/index.php"; }
