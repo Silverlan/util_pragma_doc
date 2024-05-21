@@ -92,7 +92,7 @@ endif()
 target_sources(${PROJ_NAME}
   PUBLIC
     FILE_SET cxx_modules TYPE CXX_MODULES FILES
-    include/util_pragma_doc.ixx
+    include/util_pragma_doc.cppm
 
     src/base_collection.cpp
     src/collection.cpp
