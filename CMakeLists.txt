@@ -1,130 +1,21 @@
-cmake_minimum_required(VERSION 3.28)
+include(${CMAKE_SOURCE_DIR}/cmake/pr_common.cmake)
 
-set(INCLUDE_DIRS)
-function(add_include_dir IDENTIFIER)
-	set(PRETTYNAME ${IDENTIFIER})
-	set(ARGV ${ARGN})
-	list(LENGTH ARGV ARGC)
-	if(${ARGC} GREATER 0)
-		list(GET ARGV 0 PRETTYNAME)
-	endif()
-	string(TOUPPER ${IDENTIFIER} UIDENTIFIER)
-
-	set(${DEFAULT_DIR} "")
-	set(DEPENDENCY_${UIDENTIFIER}_INCLUDE ${DEFAULT_DIR} CACHE PATH "Path to ${PRETTYNAME} include directory.")
-	set(INCLUDE_DIRS ${INCLUDE_DIRS} DEPENDENCY_${UIDENTIFIER}_INCLUDE PARENT_SCOPE)
-endfunction(add_include_dir)
-
-set(LIBRARIES)
-function(add_external_library IDENTIFIER)
-	set(PRETTYNAME ${IDENTIFIER})
-	set(ARGV ${ARGN})
-	list(LENGTH ARGV ARGC)
-	if(${ARGC} GREATER 0)
-		list(GET ARGV 0 PRETTYNAME)
-	endif()
-	string(TOUPPER ${IDENTIFIER} UIDENTIFIER)
-
-	set(DEPENDENCY_${UIDENTIFIER}_LIBRARY "" CACHE FILEPATH "Path to ${PRETTYNAME} library.")
-	set(LIBRARIES ${LIBRARIES} DEPENDENCY_${UIDENTIFIER}_LIBRARY PARENT_SCOPE)
-endfunction(add_external_library)
-
-function(link_external_library IDENTIFIER)
-	set(PRETTYNAME ${IDENTIFIER})
-	set(ARGV ${ARGN})
-	list(LENGTH ARGV ARGC)
-	if(${ARGC} GREATER 0)
-		list(GET ARGV 0 PRETTYNAME)
-	endif()
-	string(TOUPPER ${IDENTIFIER} UIDENTIFIER)
-
-	set(${DEFAULT_DIR} "")
-	set(DEPENDENCY_${UIDENTIFIER}_INCLUDE ${DEFAULT_DIR} CACHE PATH "Path to ${PRETTYNAME} include directory.")
-	set(INCLUDE_DIRS ${INCLUDE_DIRS} DEPENDENCY_${UIDENTIFIER}_INCLUDE PARENT_SCOPE)
-
-	set(DEPENDENCY_${UIDENTIFIER}_LIBRARY "" CACHE FILEPATH "Path to ${PRETTYNAME} library.")
-	set(LIBRARIES ${LIBRARIES} DEPENDENCY_${UIDENTIFIER}_LIBRARY PARENT_SCOPE)
-endfunction(link_external_library)
-
-##### CONFIGURATION #####
+option(CONFIG_ENABLE_EXECUTABLE_FLAG "Build as executable?" ON)
 
 set(PROJ_NAME util_pragma_doc)
 
-project(${PROJ_NAME} CXX)
-
-set(CMAKE_CXX_STANDARD 20)
-option(CONFIG_ENABLE_EXECUTABLE_FLAG "Build as executable?" ON)
-# set(PRECOMPILED_HEADER "stdafx")
-
-set(DEFINITIONS)
-
 if(CONFIG_ENABLE_EXECUTABLE_FLAG)
-	link_external_library(sharedutils)
-	link_external_library(mathutil)
-	link_external_library(vfilesystem)
-	link_external_library(util_udm)
-
-	list(APPEND DEFINITIONS UTIL_PRAGMA_DOC_EXE)
+	pr_add_executable(${PROJ_NAME})
 else()
-	add_include_dir(sharedutils)
-	add_include_dir(mathutil)
-	add_include_dir(vfilesystem)
-	add_include_dir(glm)
-	add_include_dir(util_udm)
+	pr_add_library(${PROJ_NAME} STATIC)
 endif()
 
-##### CONFIGURATION #####
-
-foreach(def IN LISTS DEFINITIONS)
-	add_definitions(-D${def})
-endforeach(def)
-
+pr_add_dependency(${PROJ_NAME} util_udm TARGET PUBLIC)
 if(CONFIG_ENABLE_EXECUTABLE_FLAG)
-	add_executable(${PROJ_NAME})
-else()
-	add_library(${PROJ_NAME} STATIC)
-if(WIN32)
-	target_compile_options(${PROJ_NAME} PRIVATE /wd4251)
-	target_compile_options(${PROJ_NAME} PRIVATE /wd4996)
-endif()
+	pr_add_compile_definitions(${PROJ_NAME} -DUTIL_PRAGMA_DOC_EXE)
 endif()
 
-target_link_libraries(${PROJ_NAME} util_udm)
-target_sources(${PROJ_NAME}
-  PUBLIC
-    FILE_SET cxx_modules TYPE CXX_MODULES FILES
-    include/util_pragma_doc.ixx
+pr_add_headers(${PROJ_NAME} "include/")
+pr_add_sources(${PROJ_NAME} "src/")
 
-    src/base_collection.cpp
-    src/collection.cpp
-    src/derived_from.cpp
-    src/doc_parameter.cpp
-    src/enum.cpp
-    src/enum_set.cpp
-    src/function.cpp
-    src/group.cpp
-    src/member.cpp
-    src/module.cpp
-    src/overload.cpp
-    src/udm.cpp
-    src/util.cpp
-    src/zerobrane.cpp
-)
-
-foreach(LIB IN LISTS LIBRARIES)
-	target_link_libraries(${PROJ_NAME} ${${LIB}})
-endforeach(LIB)
-
-target_include_directories(${PROJ_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
-target_include_directories(${PROJ_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src)
-
-foreach(INCLUDE_PATH IN LISTS INCLUDE_DIRS)
-	target_include_directories(${PROJ_NAME} PRIVATE ${${INCLUDE_PATH}})
-endforeach(INCLUDE_PATH)
-
-set(TARGET_PROPERTIES LINKER_LANGUAGE CXX)
-if(DEFINED PRECOMPILED_HEADER)
-	include(PrecompiledHeader.cmake)
-	add_precompiled_header(${PROJ_NAME} "src/${PRECOMPILED_HEADER}.h" c++17 FORCEINCLUDE)
-endif()
-set_target_properties(${PROJ_NAME} PROPERTIES ${TARGET_PROPERTIES})
+pr_finalize(${PROJ_NAME})
