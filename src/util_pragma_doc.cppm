@@ -2,8 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef __UTIL_PRAGMA_DOC_HPP__
-#define __UTIL_PRAGMA_DOC_HPP__
+module;
 
 #include <vector>
 #include <memory>
@@ -11,15 +10,14 @@
 #include <string>
 #include <functional>
 #include <mathutil/umath.h>
+#include "types.hpp"
 
-class VFilePtrInternal;
-class VFilePtrInternalReal;
-namespace udm {
-	struct AssetData;
-	using AssetDataArg = const AssetData &;
-	struct LinkedPropertyWrapper;
+export module pragma.doc;
+
+namespace pragma::doc {
+	std::string get_wiki_url() { return "https://wiki.pragma-engine.com/index.php"; }
 };
-namespace pragma {
+export namespace pragma {
 	namespace detail {
 		std::string get_wiki_url(const std::string &fullPath, bool isFunOrMember);
 	};
@@ -437,13 +435,14 @@ namespace pragma {
 		};
 	};
 };
-REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::GameStateFlags);
-REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Member::Mode);
-REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Parameter::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Function::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Collection::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::EnumSet::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Member::Flags);
-REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Variant::Flags);
-
-#endif
+export
+{
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::GameStateFlags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Member::Mode);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Parameter::Flags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Function::Flags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Collection::Flags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::EnumSet::Flags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Member::Flags);
+	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Variant::Flags);
+};

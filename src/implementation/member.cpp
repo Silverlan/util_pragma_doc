@@ -2,9 +2,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "util_pragma_doc.hpp"
+module;
+
 #include <fsys/filesystem.h>
 #include <sharedutils/util_string.h>
+
+module pragma.doc;
 
 using namespace pragma;
 

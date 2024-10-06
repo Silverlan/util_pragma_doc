@@ -15,7 +15,6 @@ if(CONFIG_ENABLE_EXECUTABLE_FLAG)
 	pr_add_compile_definitions(${PROJ_NAME} -DUTIL_PRAGMA_DOC_EXE)
 endif()
 
-pr_add_headers(${PROJ_NAME} "include/")
-pr_add_sources(${PROJ_NAME} "src/")
+pr_init_module(${PROJ_NAME})
 
 pr_finalize(${PROJ_NAME})
