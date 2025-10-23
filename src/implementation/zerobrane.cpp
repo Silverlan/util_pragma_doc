@@ -3,11 +3,12 @@
 
 module;
 
-#include <sharedutils/util_string.h>
 #include <unordered_set>
 #include <sstream>
 
 module pragma.doc;
+
+import pragma.string;
 
 static std::string normalize_text(const std::string &text)
 {

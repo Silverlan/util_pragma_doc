@@ -3,7 +3,8 @@
 
 module;
 
-#include <fsys/filesystem.h>
+#include <string>
+#include <vector>
 
 module pragma.doc;
 

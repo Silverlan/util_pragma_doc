@@ -3,8 +3,7 @@
 
 module;
 
-#include <fsys/filesystem.h>
-#include <sharedutils/util_string.h>
+#include <string>
 
 module pragma.doc;
 
