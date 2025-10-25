@@ -3,6 +3,8 @@
 
 module;
 
+#include <vector>
+
 module pragma.doc;
 
 using namespace pragma;

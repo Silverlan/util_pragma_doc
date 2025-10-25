@@ -5,6 +5,8 @@ module;
 
 #include <algorithm>
 #include <string>
+#include <vector>
+#include <cinttypes>
 
 module pragma.doc;
 

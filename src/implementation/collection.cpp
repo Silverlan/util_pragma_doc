@@ -6,6 +6,8 @@ module;
 #include <string>
 #include <memory>
 #include <algorithm>
+#include <vector>
+#include <functional>
 
 module pragma.doc;
 

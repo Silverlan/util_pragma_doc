@@ -4,6 +4,7 @@
 module;
 
 #include <string>
+#include <optional>
 
 module pragma.doc;
 
