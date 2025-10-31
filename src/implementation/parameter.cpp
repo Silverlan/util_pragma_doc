@@ -3,10 +3,6 @@
 
 module;
 
-#include <string>
-#include <optional>
-#include <vector>
-#include <functional>
 
 module pragma.doc;
 

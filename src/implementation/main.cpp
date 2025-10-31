@@ -3,9 +3,6 @@
 
 #ifdef UTIL_PRAGMA_DOC_EXE
 #include "util_pragma_doc.hpp"
-#include <iostream>
-#include <array>
-#include <sstream>
 
 int main(int argc, char *argv[])
 {

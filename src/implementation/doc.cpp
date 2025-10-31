@@ -3,8 +3,6 @@
 
 module;
 
-#include <array>
-#include <string>
 
 module pragma.doc;
 
