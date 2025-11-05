@@ -3,7 +3,6 @@
 
 module;
 
-
 export module pragma.doc;
 
 import pragma.udm;
@@ -430,8 +429,7 @@ export namespace pragma {
 		using namespace umath::scoped_enum::bitwise;
 	};
 };
-export
-{
+export {
 	namespace umath::scoped_enum::bitwise {
 		template<>
 		struct enable_bitwise_operators<pragma::doc::GameStateFlags> : std::true_type {};

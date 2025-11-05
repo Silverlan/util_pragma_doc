@@ -3,7 +3,6 @@
 
 module;
 
-
 module pragma.doc;
 
 import pragma.string;
