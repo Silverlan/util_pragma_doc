@@ -3,8 +3,6 @@
 
 module;
 
-#include <fsys/filesystem.h>
-
 module pragma.doc;
 
 using namespace pragma;

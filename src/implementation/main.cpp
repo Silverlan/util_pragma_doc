@@ -3,11 +3,6 @@
 
 #ifdef UTIL_PRAGMA_DOC_EXE
 #include "util_pragma_doc.hpp"
-#include <fsys/filesystem.h>
-#include <iostream>
-#include <array>
-#include <sstream>
-#include <sharedutils/util_string.h>
 
 int main(int argc, char *argv[])
 {

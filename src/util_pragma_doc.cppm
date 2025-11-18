@@ -3,15 +3,9 @@
 
 module;
 
-#include <vector>
-#include <memory>
-#include <optional>
-#include <string>
-#include <functional>
-#include <mathutil/umath.h>
-#include "types.hpp"
-
 export module pragma.doc;
+
+import pragma.udm;
 
 namespace pragma::doc {
 	std::string get_wiki_url() { return "https://wiki.pragma-engine.com/index.php"; }
@@ -432,16 +426,26 @@ export namespace pragma {
 			std::vector<PCollection> m_children;
 			std::weak_ptr<Collection> m_parent = {};
 		};
+		using namespace umath::scoped_enum::bitwise;
 	};
 };
-export
-{
-	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::GameStateFlags);
-	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Member::Mode);
-	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Parameter::Flags);
-	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Function::Flags);
-	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Collection::Flags);
-	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::EnumSet::Flags);
-	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Member::Flags);
-	REGISTER_BASIC_BITWISE_OPERATORS(pragma::doc::Variant::Flags);
+export {
+	namespace umath::scoped_enum::bitwise {
+		template<>
+		struct enable_bitwise_operators<pragma::doc::GameStateFlags> : std::true_type {};
+		template<>
+		struct enable_bitwise_operators<pragma::doc::Member::Mode> : std::true_type {};
+		template<>
+		struct enable_bitwise_operators<pragma::doc::Parameter::Flags> : std::true_type {};
+		template<>
+		struct enable_bitwise_operators<pragma::doc::Function::Flags> : std::true_type {};
+		template<>
+		struct enable_bitwise_operators<pragma::doc::Collection::Flags> : std::true_type {};
+		template<>
+		struct enable_bitwise_operators<pragma::doc::EnumSet::Flags> : std::true_type {};
+		template<>
+		struct enable_bitwise_operators<pragma::doc::Member::Flags> : std::true_type {};
+		template<>
+		struct enable_bitwise_operators<pragma::doc::Variant::Flags> : std::true_type {};
+	}
 };

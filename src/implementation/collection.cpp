@@ -3,13 +3,9 @@
 
 module;
 
-#include <sharedutils/util.h>
-#include <sharedutils/util_string.h>
-#include <sharedutils/util_path.hpp>
-#include <fsys/filesystem.h>
-#include "types.hpp"
-
 module pragma.doc;
+
+import pragma.util;
 
 using namespace pragma;
 

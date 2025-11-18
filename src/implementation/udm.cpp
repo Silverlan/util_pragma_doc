@@ -3,11 +3,9 @@
 
 module;
 
-#include <udm.hpp>
-#include <sharedutils/magic_enum.hpp>
-#include <sharedutils/util_string.h>
-
 module pragma.doc;
+
+import pragma.udm;
 
 using namespace pragma;
 
