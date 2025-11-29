@@ -3,6 +3,8 @@
 
 module;
 
+#include "util_enum_flags.hpp"
+
 export module pragma.doc;
 
 import pragma.udm;
@@ -430,22 +432,12 @@ export namespace pragma {
 	};
 };
 export {
-	namespace umath::scoped_enum::bitwise {
-		template<>
-		struct enable_bitwise_operators<pragma::doc::GameStateFlags> : std::true_type {};
-		template<>
-		struct enable_bitwise_operators<pragma::doc::Member::Mode> : std::true_type {};
-		template<>
-		struct enable_bitwise_operators<pragma::doc::Parameter::Flags> : std::true_type {};
-		template<>
-		struct enable_bitwise_operators<pragma::doc::Function::Flags> : std::true_type {};
-		template<>
-		struct enable_bitwise_operators<pragma::doc::Collection::Flags> : std::true_type {};
-		template<>
-		struct enable_bitwise_operators<pragma::doc::EnumSet::Flags> : std::true_type {};
-		template<>
-		struct enable_bitwise_operators<pragma::doc::Member::Flags> : std::true_type {};
-		template<>
-		struct enable_bitwise_operators<pragma::doc::Variant::Flags> : std::true_type {};
-	}
+	REGISTER_ENUM_FLAGS(pragma::doc::GameStateFlags)
+	REGISTER_ENUM_FLAGS(pragma::doc::Member::Mode)
+	REGISTER_ENUM_FLAGS(pragma::doc::Parameter::Flags)
+	REGISTER_ENUM_FLAGS(pragma::doc::Function::Flags)
+	REGISTER_ENUM_FLAGS(pragma::doc::Collection::Flags)
+	REGISTER_ENUM_FLAGS(pragma::doc::EnumSet::Flags)
+	REGISTER_ENUM_FLAGS(pragma::doc::Member::Flags)
+	REGISTER_ENUM_FLAGS(pragma::doc::Variant::Flags)
 };
