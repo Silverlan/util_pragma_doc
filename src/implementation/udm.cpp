@@ -9,30 +9,30 @@ import pragma.udm;
 
 using namespace pragma;
 
-static std::string generate_identifier(const pragma::doc::Function &f)
+static std::string generate_identifier(const doc::Function &f)
 {
 	auto name = f.GetFullName();
-	ustring::to_lower(name);
+	pragma::string::to_lower(name);
 	std::replace(name.begin(), name.end(), '.', '-');
 	name = "f-" + name;
 	return name;
 }
 
-static std::string generate_identifier(const pragma::doc::Collection &c)
+static std::string generate_identifier(const doc::Collection &c)
 {
 	auto name = c.GetFullName();
-	ustring::to_lower(name);
+	pragma::string::to_lower(name);
 	std::replace(name.begin(), name.end(), '.', '-');
-	if(umath::is_flag_set(c.GetFlags(), pragma::doc::Collection::Flags::Class))
+	if(math::is_flag_set(c.GetFlags(), doc::Collection::Flags::Class))
 		name = "c-" + name;
-	else if(umath::is_flag_set(c.GetFlags(), pragma::doc::Collection::Flags::Library))
+	else if(math::is_flag_set(c.GetFlags(), doc::Collection::Flags::Library))
 		name = "l-" + name;
 	else
 		name = "g-" + name;
 	return name;
 }
 
-static void save_variant(udm::LinkedPropertyWrapper &udmVariant, const pragma::doc::Variant &variant)
+static void save_variant(udm::LinkedPropertyWrapper &udmVariant, const doc::Variant &variant)
 {
 	udmVariant["name"] = variant.name;
 	udmVariant["flags"] = udm::flags_to_string(variant.flags);
@@ -47,7 +47,7 @@ static void save_variant(udm::LinkedPropertyWrapper &udmVariant, const pragma::d
 	}
 }
 
-static void save_parameter(udm::LinkedPropertyWrapper &udmParam, const pragma::doc::Parameter &param)
+static void save_parameter(udm::LinkedPropertyWrapper &udmParam, const doc::Parameter &param)
 {
 	udmParam["name"] = param.GetName();
 	udmParam["flags"] = udm::flags_to_string(param.GetFlags());
@@ -61,7 +61,7 @@ static void save_parameter(udm::LinkedPropertyWrapper &udmParam, const pragma::d
 		udmParam["default"] = *def;
 }
 
-static void save_collection(udm::LinkedPropertyWrapper udmCollection, const pragma::doc::Collection &collection)
+static void save_collection(udm::LinkedPropertyWrapper udmCollection, const doc::Collection &collection)
 {
 	udmCollection["desc"] = collection.GetDescription();
 	if(!collection.GetURL().empty())
@@ -188,7 +188,7 @@ bool doc::Collection::Save(udm::AssetDataArg outData, std::string &outErr)
 	return true;
 }
 
-static void load_variant(udm::LinkedPropertyWrapper &udmVariant, pragma::doc::Variant &variant)
+static void load_variant(udm::LinkedPropertyWrapper &udmVariant, doc::Variant &variant)
 {
 	udmVariant["name"](variant.name);
 	udm::to_flags(udmVariant["flags"], variant.flags);
@@ -209,7 +209,7 @@ void doc::Collection::Load(udm::LinkedPropertyWrapper &udmCollection)
 	udm::to_flags<Flags>(udmCollection["flags"], m_flags);
 	udmCollection["identifier"](m_identifier);
 
-	auto fLoadParam = [](udm::LinkedPropertyWrapper &udmParam, pragma::doc::Parameter &param) {
+	auto fLoadParam = [](udm::LinkedPropertyWrapper &udmParam, Parameter &param) {
 		udmParam["name"](param.m_name);
 		udm::to_flags(udmParam["flags"], param.m_flags);
 		udm::to_flags(udmParam["gameStateFlags"], param.m_gameStateFlags);

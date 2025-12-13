@@ -138,9 +138,9 @@ void doc::Collection::SetDescription(const std::string &desc) { m_description = 
 void doc::Collection::SetURL(const std::string &url) { m_url = url; }
 void doc::Collection::SetFlags(Flags flags) { m_flags = flags; }
 void doc::Collection::SetParent(Collection *optParent) { m_parent = optParent ? optParent->shared_from_this() : std::weak_ptr<Collection> {}; }
-pragma::doc::PCollection pragma::doc::Collection::Create() { return std::shared_ptr<Collection> {new Collection {}}; }
+doc::PCollection doc::Collection::Create() { return std::shared_ptr<Collection> {new Collection {}}; }
 
-pragma::doc::PCollection pragma::doc::Collection::Load(const udm::AssetData &data, std::string &outErr)
+doc::PCollection doc::Collection::Load(const udm::AssetData &data, std::string &outErr)
 {
 	auto col = Create();
 	if(col->LoadFromAssetData(data, outErr) == false)
@@ -148,4 +148,4 @@ pragma::doc::PCollection pragma::doc::Collection::Load(const udm::AssetData &dat
 	return col;
 }
 
-bool pragma::doc::Collection::operator==(const Collection &other) const { return m_name == other.m_name && (m_flags & (Flags::Library | Flags::Class)) == (other.m_flags & (Flags::Library | Flags::Class)); }
+bool doc::Collection::operator==(const Collection &other) const { return m_name == other.m_name && (m_flags & (Flags::Library | Flags::Class)) == (other.m_flags & (Flags::Library | Flags::Class)); }

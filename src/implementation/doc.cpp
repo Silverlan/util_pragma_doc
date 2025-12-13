@@ -9,10 +9,10 @@ import pragma.string;
 
 using namespace pragma;
 
-std::string pragma::detail::get_wiki_url(const std::string &fullPath, bool isFunOrMember)
+std::string detail::get_wiki_url(const std::string &fullPath, bool isFunOrMember)
 {
 	auto url = fullPath;
-	ustring::replace(url, ".", "/");
+	string::replace(url, ".", "/");
 
 	if(isFunOrMember) {
 		auto p = url.rfind('/');

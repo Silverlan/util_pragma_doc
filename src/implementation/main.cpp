@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 		pragma::doc::load_collections(f, collections);
 		f = nullptr;
 
-		auto fZb = FileManager::OpenFile<VFilePtrReal>("pragma.lua", "w");
+		auto fZb = FileManager::OpenFile<fs::VFilePtrReal>("pragma.lua", "w");
 		fZb->WriteString(pragma::doc::zerobrane::generate_autocomplete_script(collections));
 		fZb = nullptr;
 	}

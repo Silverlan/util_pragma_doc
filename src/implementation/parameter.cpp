@@ -8,7 +8,7 @@ module pragma.doc;
 using namespace pragma;
 
 bool doc::Variant::operator==(const Variant &other) const { return name == other.name && flags == other.flags && typeParameters == other.typeParameters; }
-bool doc::Variant::IsOptional() const { return umath::is_flag_set(flags, Flags::Optional); }
+bool doc::Variant::IsOptional() const { return math::is_flag_set(flags, Flags::Optional); }
 std::string doc::Variant::GetFormattedType(ParameterFormatType formatType, const std::function<void(const Variant &, std::string &)> &typeTranslator) const
 {
 	std::string s;

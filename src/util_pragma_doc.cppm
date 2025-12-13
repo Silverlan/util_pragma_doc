@@ -428,7 +428,7 @@ export namespace pragma {
 			std::vector<PCollection> m_children;
 			std::weak_ptr<Collection> m_parent = {};
 		};
-		using namespace umath::scoped_enum::bitwise;
+		using namespace pragma::math::scoped_enum::bitwise;
 	};
 };
 export {

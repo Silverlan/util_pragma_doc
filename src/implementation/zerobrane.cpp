@@ -10,8 +10,8 @@ import pragma.string;
 static std::string normalize_text(const std::string &text)
 {
 	auto normalizedText = text;
-	ustring::replace(normalizedText, "[[", "\\[\\[");
-	ustring::replace(normalizedText, "]]", "\\]\\]");
+	pragma::string::replace(normalizedText, "[[", "\\[\\[");
+	pragma::string::replace(normalizedText, "]]", "\\]\\]");
 	return normalizedText;
 }
 
@@ -147,7 +147,7 @@ static void generate_zerobrane_autocomplete(std::stringstream &ss, const std::ve
 	}
 }
 
-std::string pragma::doc::zerobrane::generate_autocomplete_script(const std::vector<pragma::doc::PCollection> &collections)
+std::string pragma::doc::zerobrane::generate_autocomplete_script(const std::vector<PCollection> &collections)
 {
 	std::stringstream ss;
 	ss << "return {\n";
@@ -167,7 +167,7 @@ static void resolve_keywords(std::string &val)
 static void normalize_argument(std::string &val)
 {
 	resolve_keywords(val);
-	if(ustring::is_integer(val))
+	if(pragma::string::is_integer(val))
 		val = "arg" + val;
 }
 
@@ -218,7 +218,7 @@ static void generate_ldoc_autocomplete(pragma::doc::luals::Doc &docFileManager, 
 	auto bFirst = true;
 	for(auto &collection : collections) {
 		std::stringstream *libStream = nullptr;
-		if(umath::is_flag_set(collection->GetFlags(), pragma::doc::Collection::Flags::Library)) {
+		if(pragma::math::is_flag_set(collection->GetFlags(), pragma::doc::Collection::Flags::Library)) {
 			libStream = &docFileManager.GetStream(collection->GetName());
 		}
 		auto &ss = libStream ? *libStream : ssParent;
@@ -329,10 +329,10 @@ static void generate_ldoc_autocomplete(pragma::doc::luals::Doc &docFileManager, 
 	}
 }
 
-pragma::doc::luals::Doc pragma::doc::luals::generate_doc(const std::vector<pragma::doc::PCollection> &collections)
+pragma::doc::luals::Doc pragma::doc::luals::generate_doc(const std::vector<PCollection> &collections)
 {
 	// See https://github.com/LuaLS/lua-language-server/wiki/Annotations
-	pragma::doc::luals::Doc docFileManager {};
+	Doc docFileManager {};
 	auto &ss = docFileManager.GetStream("root");
 	generate_ldoc_autocomplete(docFileManager, ss, collections, "");
 	return docFileManager;
